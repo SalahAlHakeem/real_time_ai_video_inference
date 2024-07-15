@@ -1,0 +1,19 @@
+tracker:
+  enable: 1
+  tracker-width: 640
+  tracker-height: 480
+  gpu-id: 0
+  ll-lib-file: /opt/nvidia/deepstream/deepstream/lib/libnvds_nvmultiobjecttracker.so
+  ll-config-file: ./tracker_config.yml
+  enable-batch-process: 1
+
+message-broker:
+  hostname: localhost
+  username: guest
+  password: guest
+  port: 5672
+  exchange: deepstram_exchange
+  topic: detected_suspicous_items
+  routing-key: deepstream.routing.key
+  amqp-framesize: 131072
+  amqp-heartbeat: 60

@@ -1,0 +1,17 @@
+NvDCF:
+  useUniqueID: 1
+  maxTargetsPerStream: 50
+  enableRepeatedDetectionEnhancement: 1
+  repeatedDetectionEnhancementParam: 0.2
+  enableGrouper: 1
+  enableTTL: 1
+  targetManagement:
+    minTrackLife: 1
+    targetOverlapThreshold: 0.6
+  featureExtractor:
+    featureExtractorLib: libnvds_nvdla.so
+  ttl:
+    ttlDuration: 10
+  associator:
+    featureMatchWeight: 0.8
+    bboxMatchWeight: 0.2
