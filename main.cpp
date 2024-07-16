@@ -855,12 +855,17 @@ int main(int argc, char *argv[]) {
         NULL
         );
 
+    auto input_sources = app_config["sources"];
+    char** source_storage = new char*[input_sources.size()];
 
     if (!isYAML) {
-        for (src_cnt = 0; src_cnt < (guint) argc - 4; src_cnt++) {
-            g_list = g_list_append(g_list, argv[src_cnt + 3]);
+        for (int index = 0; index < input_sources.size(); index++) {
+            source_storage[index] = new char[input_sources[index].size()];
+            std::strcpy(source_storage[index], input_sources[index].as<std::string>().c_str());
 
+            g_list = g_list_append(g_list, source_storage[index]);
         }
+
     } else {
         if (NVDS_YAML_PARSER_SUCCESS != nvds_parse_source_list(&g_list, argv[1], "source-list")) {
             g_printerr("Failed to parse config file\n");
@@ -956,7 +961,7 @@ int main(int argc, char *argv[]) {
             return -1;
         }
     } else {
-        output_type = atoi(argv[1]);
+        output_type = 3;
     }
 
     if (output_type == 1) {
@@ -1139,8 +1144,6 @@ int main(int argc, char *argv[]) {
     gst_object_unref (osd_sink_pad);
 
 
-    /* Set the pipeline to "playing" state */
-    g_print ("Now playing: %s\n", argv[3]);
     gst_element_set_state (pipeline, GST_STATE_PLAYING);
 
     /* Wait till pipeline encounters an error or EOS */

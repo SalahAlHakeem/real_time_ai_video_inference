@@ -17,3 +17,6 @@ message-broker:
   routing-key: deepstream.routing.key
   amqp-framesize: 131072
   amqp-heartbeat: 60
+
+sources:
+  - rtsp://192.168.1.121

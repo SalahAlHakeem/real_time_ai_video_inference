@@ -11,7 +11,7 @@ sudo CUDA_VER=12.2 make all
 ``` shell
 # Compilation and running
 sudo make
-sudo ./main 3 configurations/primary_engine_config.yml  rtsp://192.168.1.121 rtsp://192.168.1.121
+sudo ./main 
 ```
 
 
