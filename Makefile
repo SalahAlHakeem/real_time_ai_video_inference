@@ -72,7 +72,7 @@ main.o: main.cpp $(INCS) Makefile
 	$(CXX) -c -o $@ -fpermissive -Wall $(CXXFLAGS) $<
 
 
-ds_yml_parse.o: ../common/ds_yml_parse.cpp $(INCS) Makefile
+ds_yml_parse.o: common/ds_yml_parse.cpp $(INCS) Makefile
 	$(CXX) -c -o $@ -Wall  $(CXXFLAGS) $<
 
 $(APP): $(OBJS) Makefile
