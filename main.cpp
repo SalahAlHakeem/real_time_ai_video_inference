@@ -769,7 +769,6 @@ int main(int argc, char *argv[]) {
 
     NvDsGieType pgie_type = NVDS_GIE_PLUGIN_INFER;
 
-
     // RabbitMQ set up
     amqp_connection_state_t connection = amqp_new_connection();
     amqp_socket_t* socket  = amqp_tcp_socket_new(connection);
@@ -1011,7 +1010,8 @@ int main(int argc, char *argv[]) {
         return -1;
     }
 #endif
-        sink = gst_element_factory_make("nveglglessink", "nvvideo-renderer");
+        //sink = gst_element_factory_make("nveglglessink", "nvvideo-renderer");
+        sink = gst_element_factory_make("nvrtspoutsinkbin", "nvvideo-rendererrtsp");
     }
 
     if (!primary_detector || !nvvidconv || !nvosd || !sink  || !capfilt) {
