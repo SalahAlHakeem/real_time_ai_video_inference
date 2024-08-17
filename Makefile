@@ -59,7 +59,6 @@ LIBS+= -L$(LIB_INSTALL_DIR) -lnvdsgst_meta -lnvds_meta -lnvds_inferutils -lnvbuf
        -L/opt/nvidia/deepstream/deepstream/lib/cvcore_libs \
        -lnvcv_core -lnvcv_tensorops -lnvcv_trtbackend \
        -Wl,-rpath,$(LIB_INSTALL_DIR) \
-       -L/usr/local/lib -lrabbitmq \
        -L/usr/lib/x86_64-linux-gnu -lcryptopp
 
 
