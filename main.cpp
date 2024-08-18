@@ -618,6 +618,79 @@ static bool create_source_bin(DsSourceBinStruct *ds_source_struct, gchar *uri) {
     ds_source_struct->nvvidconv = NULL;
     ds_source_struct->capsfilt = NULL;
     ds_source_struct->source_bin = NULL;
+    ds_source_struct->rtspsrc = NULL;
+
+    // Generate a unique name for the source bin
+    g_snprintf(bin_name, 15, "source-bin-%02d", ds_source_struct->index);
+
+    // Create a new GstBin for the source
+    ds_source_struct->source_bin = gst_bin_new(bin_name);
+
+    // Create elements: rtspsrc, nvvideoconvert, capsfilter
+    ds_source_struct->rtspsrc = gst_element_factory_make("rtspsrc", "rtsp-source");
+    ds_source_struct->nvvidconv = gst_element_factory_make("nvvideoconvert", "source_nvvidconv");
+    ds_source_struct->capsfilt = gst_element_factory_make("capsfilter", "source_capset");
+
+    // Check if all elements were created successfully
+    if (!ds_source_struct->source_bin || !ds_source_struct->rtspsrc ||
+        !ds_source_struct->nvvidconv || !ds_source_struct->capsfilt) {
+        g_printerr("One element in source bin could not be created.\n");
+        return false;
+    }
+
+    // Set the RTSP URI, username, and password
+    g_object_set(G_OBJECT(ds_source_struct->rtspsrc),
+                 "location", uri,
+                 "user-id", "Admin",
+                 "user-pw", "qwerty123",
+                 NULL);
+
+    // Connect to the "pad-added" signal of rtspsrc
+    g_signal_connect(G_OBJECT(ds_source_struct->rtspsrc), "pad-added",
+                     G_CALLBACK(cb_newpad), ds_source_struct);
+
+    // Create and set capabilities for the capsfilter element
+    caps = gst_caps_new_simple("video/x-raw", "format", G_TYPE_STRING, "NV12", NULL);
+    feature = gst_caps_features_new("memory:NVMM", NULL);
+    gst_caps_set_features(caps, 0, feature);   
+    g_object_set(G_OBJECT(ds_source_struct->capsfilt), "caps", caps, NULL);
+
+    // Add elements to the source bin
+    gst_bin_add_many(GST_BIN(ds_source_struct->source_bin),
+                     ds_source_struct->rtspsrc, ds_source_struct->nvvidconv,
+                     ds_source_struct->capsfilt, NULL);
+
+    // Link rtspsrc to the next element
+    if (!gst_element_link(ds_source_struct->nvvidconv, ds_source_struct->capsfilt)) {
+        g_printerr("Could not link vidconv and capsfilter\n");
+        return false;
+    }
+
+    // Create a ghost pad for the source bin
+    GstPad *gstpad = gst_element_get_static_pad(ds_source_struct->capsfilt, "src");
+    if (!gstpad) {
+        g_printerr("Could not find srcpad in '%s'", GST_ELEMENT_NAME(ds_source_struct->capsfilt));
+        return false;
+    }
+    if (!gst_element_add_pad(ds_source_struct->source_bin, gst_ghost_pad_new("src", gstpad))) {
+        g_printerr("Could not add ghost pad in '%s'", GST_ELEMENT_NAME(ds_source_struct->capsfilt));
+    }
+    gst_object_unref(gstpad);
+
+    return true;
+}
+
+
+
+static bool __create_source_bin(DsSourceBinStruct *ds_source_struct, gchar *uri) {
+    gchar bin_name[16] = { };
+    GstCaps *caps = NULL;
+    GstCapsFeatures *feature = NULL;
+
+    // Initialize elements to NULL
+    ds_source_struct->nvvidconv = NULL;
+    ds_source_struct->capsfilt = NULL;
+    ds_source_struct->source_bin = NULL;
     ds_source_struct->uri_decode_bin = NULL;
 
     // Generate a unique name for the source bin
