@@ -1077,13 +1077,13 @@ int main(int argc, char *argv[]) {
     } else if (output_type == 2) {
         sink = gst_element_factory_make("fakesink", "fake-renderer");
     } else if (output_type == 3) {
-#ifdef PLATFORM_TEGRA
-        transform = gst_element_factory_make("nvegltransform", "nvegltransform");
-    if (!transform) {
-        g_printerr("nvegltransform element could not be created. Exiting.\n");
-        return -1;
-    }
-#endif
+// #ifdef PLATFORM_TEGRA
+//         transform = gst_element_factory_make("nvegltransform", "nvegltransform");
+//     if (!transform) {
+//         g_printerr("nvegltransform element could not be created. Exiting.\n");
+//         return -1;
+//     }
+// #endif
         //sink = gst_element_factory_make("nveglglessink", "nvvideo-renderer");
         sink = gst_element_factory_make("nvrtspoutsinkbin", "nvvideo-rendererrtsp");
     }
@@ -1159,19 +1159,19 @@ int main(int argc, char *argv[]) {
             return -1;
         }
     } else if (output_type == 3) {
-#ifdef PLATFORM_TEGRA
-        gst_bin_add_many(GST_BIN(pipeline), transform, queue6, NULL);
-    if (!gst_element_link_many(nvosd, queue6, transform, sink, NULL)) {
-        g_printerr("OSD and sink elements link failure.\n");
-        return -1;
-    }
-#else
-        gst_bin_add(GST_BIN(pipeline), queue6);
-        if (!gst_element_link_many(nvosd, queue6, sink, NULL)) {
-            g_printerr("OSD and sink elements link failure.\n");
-            return -1;
-        }
-#endif
+// #ifdef PLATFORM_TEGRA
+//         gst_bin_add_many(GST_BIN(pipeline), transform, queue6, NULL);
+//     if (!gst_element_link_many(nvosd, queue6, transform, sink, NULL)) {
+//         g_printerr("OSD and sink elements link failure.\n");
+//         return -1;
+//     }
+// #else
+//         gst_bin_add(GST_BIN(pipeline), queue6);
+//         if (!gst_element_link_many(nvosd, queue6, sink, NULL)) {
+//             g_printerr("OSD and sink elements link failure.\n");
+//             return -1;
+//         }
+// #endif
 
         gst_bin_add(GST_BIN(pipeline), queue6);
         if (!gst_element_link_many(nvosd, queue6, sink, NULL)) {
