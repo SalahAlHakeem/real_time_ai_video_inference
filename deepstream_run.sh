@@ -10,8 +10,6 @@ cd ../..
 sudo make clean
 sudo make
 
-# For building TensorRT engine in jetson devices
-/usr/src/tensorrt/bin/trtexec --onnx=./yolov8/yolov8s.onnx --saveEngine=./model_b4_gpu0_fp32.engine --workspace=2500 --optShapes=input:4x3x640x640
 
 # Running application
 sudo ./main
